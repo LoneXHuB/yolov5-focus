@@ -9,6 +9,8 @@ import torch.nn as nn
 from utils.metrics import bbox_iou
 from utils.torch_utils import de_parallel
 
+from utils.general import (non_max_suppression, xyxy2xywh, cv2)
+from utils.plots import  save_one_box
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441
     # return positive, negative label smoothing BCE targets
@@ -118,12 +120,12 @@ class ComputeLoss:
         self.anchors = m.anchors
         self.device = device
 
-    def __call__(self, p, targets):  # predictions, targets
+    def __call__(self, p, targets, img):  # predictions, targets
         lcls = torch.zeros(1, device=self.device)  # class loss
         lbox = torch.zeros(1, device=self.device)  # box loss
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
-
+        
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
@@ -140,6 +142,31 @@ class ComputeLoss:
                 pbox = torch.cat((pxy, pwh), 1)  # predicted box
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
+
+                conf_thres=0.25,  # confidence threshold
+                iou_thres=0.45,  # NMS IOU threshold
+                max_det=1000,  # maximum detections per image
+                classes = None
+                agnostic_nms = False
+
+                nms_pred = non_max_suppression(p, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
+                if len(nms_pred[i]):
+                    # Rescale boxes from img_size to im0 size
+                    #nms_pred[i][:, :4] = scale_coords(im.shape[2:], nms_pred[i][:, :4], im0.shape).round()
+
+                    # Write results
+                    for *xyxy, conf, cls in reversed(nms_pred[i]):
+                        xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                        c = int(cls)  # integer class
+                        if c == 1 :
+                            cropped = save_one_box(xyxy, img , save= False , BGR=True)
+                            cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
+                            cv2.resizeWindow(str(p), cropped.shape[1], cropped.shape[0])
+                            cv2.imshow(str(p), cropped)
+                            cv2.waitKey(1) 
+
+
 
                 # Objectness
                 iou = iou.detach().clamp(0).type(tobj.dtype)

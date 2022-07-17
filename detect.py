@@ -124,8 +124,11 @@ def run(
         dt[1] += t3 - t2
 
         # NMS
+        print(pred.size())
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+        print(pred)
         dt[2] += time_sync() - t3
+
 
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
