@@ -125,12 +125,20 @@ class ComputeLoss:
         lbox = torch.zeros(1, device=self.device)  # box loss
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
+
+        conf_thres=0.25,  # confidence threshold
+        iou_thres=0.45,  # NMS IOU threshold
+        max_det=1000,  # maximum detections per image
+        classes = None
+        agnostic_nms = False
+
+        nms_pred = non_max_suppression(p, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
-
+            
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
@@ -143,13 +151,7 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
 
-                conf_thres=0.25,  # confidence threshold
-                iou_thres=0.45,  # NMS IOU threshold
-                max_det=1000,  # maximum detections per image
-                classes = None
-                agnostic_nms = False
-
-                nms_pred = non_max_suppression(p, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                
                 gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                 if len(nms_pred[i]):
                     # Rescale boxes from img_size to im0 size
