@@ -159,7 +159,6 @@ class Model(nn.Module):
             y.append(x if m.i in self.save else None)  # save output
             if visualize:
                 feature_visualization(x, m.type, m.i, save_dir=visualize)
-            print(type(x))
         return x
 
     def _descale_pred(self, p, flips, scale, img_size):

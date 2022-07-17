@@ -9,7 +9,7 @@ import torch.nn as nn
 from utils.metrics import bbox_iou
 from utils.torch_utils import de_parallel
 
-from utils.general import (non_max_suppression, xyxy2xywh, cv2)
+from utils.general import (non_max_suppression, xyxy2xywh, cv2, np)
 from utils.plots import  save_one_box
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441
@@ -132,7 +132,7 @@ class ComputeLoss:
         classes = None
         agnostic_nms = False
 
-        nms_pred = non_max_suppression(p, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+        nms_pred = non_max_suppression(torch.tensor(p), conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
