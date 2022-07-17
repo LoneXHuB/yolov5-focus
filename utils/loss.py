@@ -131,8 +131,6 @@ class ComputeLoss:
         max_det=1000,  # maximum detections per image
         classes = None
         agnostic_nms = False
-
-        nms_pred = non_max_suppression(torch.tensor(p), conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
@@ -150,8 +148,11 @@ class ComputeLoss:
                 pbox = torch.cat((pxy, pwh), 1)  # predicted box
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
-
                 
+                if not type(pi) is torch.Tensor:
+                    print(f"skipped pi because type is {type(pi)} instead of Tensor.")
+                    pass
+                nms_pred = non_max_suppression(pi, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
                 gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                 if len(nms_pred[i]):
                     # Rescale boxes from img_size to im0 size
