@@ -60,6 +60,8 @@ class Detect(nn.Module):
 
             #if not self.training:  # inference
             if self.onnx_dynamic or self.grid[i].shape[2:4] != x[i].shape[2:4]:
+                print(type(self.stride))
+                print(type(self.anchors))
                 self.grid[i], self.anchor_grid[i] = self._make_grid(nx, ny, i)
 
             y = x[i].sigmoid()
