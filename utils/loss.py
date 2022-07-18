@@ -120,7 +120,7 @@ class ComputeLoss:
         self.anchors = m.anchors
         self.device = device
 
-    def __call__(self, p, targets, img):  # predictions, targets
+    def __call__(self, p, targets, infer, img):  # predictions, targets
         lcls = torch.zeros(1, device=self.device)  # class loss
         lbox = torch.zeros(1, device=self.device)  # box loss
         lobj = torch.zeros(1, device=self.device)  # object loss
@@ -149,10 +149,13 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
                 
-                if not type(pi) is torch.Tensor:
-                    print(f"skipped pi because type is {type(pi)} instead of Tensor.")
-                    pass
-                nms_pred = non_max_suppression(pi, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                print()
+                print(p[0].size())
+                print(infer[0].size())
+                print(type(infer))
+                print()
+                
+                nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
                 gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                 if len(nms_pred[i]):
                     # Rescale boxes from img_size to im0 size
