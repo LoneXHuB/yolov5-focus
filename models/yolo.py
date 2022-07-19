@@ -76,7 +76,7 @@ class Detect(nn.Module):
                     y = torch.cat((xy, wh, conf), 4)
                 z.append(y.view(bs, -1, self.no))
         if self.stride is None:
-            return (None, x)
+            return x
         else:
             return (torch.cat(z, 1), x)
         #return x , torch.cat(z, 1) if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
