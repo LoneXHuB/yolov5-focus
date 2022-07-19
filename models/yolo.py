@@ -82,6 +82,7 @@ class Detect(nn.Module):
             print("returned tuple")
             print(type(x))
             print(type((torch.cat(z, 1), x)))
+            print()
             return (torch.cat(z, 1), x)
         #return x , torch.cat(z, 1) if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
 
