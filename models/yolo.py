@@ -65,7 +65,7 @@ class Detect(nn.Module):
                 if self.onnx_dynamic or self.grid[i].shape[2:4] != x[i].shape[2:4]:
                     self.grid[i], self.anchor_grid[i] = self._make_grid(nx, ny, i)
 
-                y = x[i].sigmoid()
+                y = x[i].copy().sigmoid()
                 if self.inplace:
                     y[..., 0:2] = (y[..., 0:2] * 2 + self.grid[i]) * self.stride[i]  # xy
                     y[..., 2:4] = (y[..., 2:4] * 2) ** 2 * self.anchor_grid[i]  # wh
@@ -84,7 +84,7 @@ class Detect(nn.Module):
             print(type((torch.cat(z, 1), x)))
             print()
             return (torch.cat(z, 1), x)
-        #return x , torch.cat(z, 1) if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
+        #return x if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
 
     def _make_grid(self, nx=20, ny=20, i=0):
         d = self.anchors[i].device
