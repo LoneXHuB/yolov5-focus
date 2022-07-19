@@ -151,26 +151,27 @@ class ComputeLoss:
                 
                 print()
                 print(p[0].size())
-                print(infer[0].size())
-                print(type(infer))
-                print()
-                
-                nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
-                gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
-                if len(nms_pred[i]):
-                    # Rescale boxes from img_size to im0 size
-                    #nms_pred[i][:, :4] = scale_coords(im.shape[2:], nms_pred[i][:, :4], im0.shape).round()
+                if(infer is not None):
+                    print(infer[0].size())
+                    print(type(infer))
+                    print()
+                    
+                    nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                    gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
+                    if len(nms_pred[i]):
+                        # Rescale boxes from img_size to im0 size
+                        #nms_pred[i][:, :4] = scale_coords(im.shape[2:], nms_pred[i][:, :4], im0.shape).round()
 
-                    # Write results
-                    for *xyxy, conf, cls in reversed(nms_pred[i]):
-                        xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                        c = int(cls)  # integer class
-                        if c == 1 :
-                            cropped = save_one_box(xyxy, img , save= False , BGR=True)
-                            cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                            cv2.resizeWindow(str(p), cropped.shape[1], cropped.shape[0])
-                            cv2.imshow(str(p), cropped)
-                            cv2.waitKey(1) 
+                        # Write results
+                        for *xyxy, conf, cls in reversed(nms_pred[i]):
+                            xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                            c = int(cls)  # integer class
+                            if c == 1 :
+                                cropped = save_one_box(xyxy, img , save= False , BGR=True)
+                                cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
+                                cv2.resizeWindow(str(p), cropped.shape[1], cropped.shape[0])
+                                cv2.imshow(str(p), cropped)
+                                cv2.waitKey(1) 
 
 
 
