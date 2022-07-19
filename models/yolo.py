@@ -75,9 +75,13 @@ class Detect(nn.Module):
                     wh = (wh * 2) ** 2 * self.anchor_grid[i]  # wh
                     y = torch.cat((xy, wh, conf), 4)
                 z.append(y.view(bs, -1, self.no))
+
         if self.stride is None:
             return x
         else:
+            print("returned tuple")
+            print(type(x))
+            print(type((torch.cat(z, 1), x)))
             return (torch.cat(z, 1), x)
         #return x , torch.cat(z, 1) if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
 
