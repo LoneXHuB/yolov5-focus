@@ -353,7 +353,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
             # Forward
             with torch.cuda.amp.autocast(amp):
-                pred = model(imgs, visualize = True)  # forward (this is now inference tuple (see yolov detect module))
+                pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
                 if isinstance(pred, Tuple):
                     print("its a tuple lets do it")
                     print(type(pred))
