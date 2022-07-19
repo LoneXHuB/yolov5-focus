@@ -152,7 +152,7 @@ class ComputeLoss:
                 print()
                 print(p[0].size())
                 if(infer is not None):
-                    print(infer[1].size())
+                    print(infer[1][0].size())
                     print(infer[0].size())
                     print(type(infer[0]))
                     print()
