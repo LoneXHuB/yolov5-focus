@@ -15,6 +15,7 @@ Usage:
 import argparse
 import math
 import os
+from pydoc import visiblename
 import random
 import sys
 import time
@@ -22,6 +23,8 @@ from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 from typing import Tuple
+
+from dask import visualize
 
 import numpy as np
 import torch
@@ -350,7 +353,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
             # Forward
             with torch.cuda.amp.autocast(amp):
-                pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
+                pred = model(imgs, visualize = True)  # forward (this is now inference tuple (see yolov detect module))
                 if isinstance(pred, Tuple):
                     print("its a tuple lets do it")
                     print(type(pred))
