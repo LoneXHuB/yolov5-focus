@@ -75,6 +75,7 @@ class Detect(nn.Module):
                     wh = (wh * 2) ** 2 * self.anchor_grid[i]  # wh
                     y = torch.cat((xy, wh, conf), 4)
                 z.append(y.view(bs, -1, self.no))
+        print(self.stride)
         if not self.stride is None:
             return x, torch.cat(z, 1)
         else:
@@ -129,7 +130,7 @@ class Model(nn.Module):
             m.anchors /= m.stride.view(-1, 1, 1)
             self.stride = m.stride
             self._initialize_biases()  # only run once
-            print(m.stride)
+
 
         # Init weights, biases
         initialize_weights(self)
