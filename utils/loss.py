@@ -153,10 +153,10 @@ class ComputeLoss:
                 print(p[0].size())
                 if(infer is not None):
                     print(infer[0].size())
-                    print(type(infer))
+                    print(type(infer[0]))
                     print()
                     
-                    nms_pred = non_max_suppression(infer, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                    nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
                         # Rescale boxes from img_size to im0 size

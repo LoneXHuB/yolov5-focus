@@ -125,6 +125,7 @@ def run(
 
         # NMS
         print(pred.size())
+        print(type(pred))
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         print(pred)
         dt[2] += time_sync() - t3
