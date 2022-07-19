@@ -148,16 +148,17 @@ class ComputeLoss:
                 pbox = torch.cat((pxy, pwh), 1)  # predicted box
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
+
+                infer = torch.tensor(np.asarray(infer)).to(self.device)
                 
                 print()
                 print(p[0].size())
                 if(infer is not None):
-                    print(infer[1][0].size())
-                    print(infer[0].size())
-                    print(type(infer[0]))
+                    print(type(infer))
+                    print(infer.size())
                     print()
                     
-                    nms_pred = non_max_suppression(infer[0][None,...], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+                    nms_pred = non_max_suppression(infer[None,...], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
                         # Rescale boxes from img_size to im0 size
