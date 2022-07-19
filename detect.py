@@ -120,10 +120,11 @@ def run(
         # Inference
         visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
         pred = model(im, augment=augment, visualize=visualize)
+        pred = torch.stack((pred,pred,pred), dim = 1)
         t3 = time_sync()
         dt[1] += t3 - t2
 
-        # NMS
+        # NMS   
         print(pred.size())
         print(type(pred))
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)

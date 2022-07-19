@@ -797,6 +797,10 @@ def non_max_suppression(prediction,
     print("type in non max supp")
     print(type(prediction))
     print(type(prediction[..., 4]))
+    print(prediction[..., 4].size())
+    print(prediction[..., 4])
+    print()
+    
     bs = prediction.shape[0]  # batch size
     nc = prediction.shape[2] - 5  # number of classes
     xc = prediction[..., 4] > conf_thres  # candidates
