@@ -75,12 +75,9 @@ class Detect(nn.Module):
                     wh = (wh * 2) ** 2 * self.anchor_grid[i]  # wh
                     y = torch.cat((xy, wh, conf), 4)
                 z.append(y.view(bs, -1, self.no))
-        print(self.stride)
-        if not self.stride is None:
-            return x, torch.cat(z, 1)
-        else:
-            return x , None
-        #return x if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
+        
+        print(torch.cat(z, 1))
+        return x if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
 
     def _make_grid(self, nx=20, ny=20, i=0):
         d = self.anchors[i].device
