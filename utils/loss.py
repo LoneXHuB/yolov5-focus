@@ -149,8 +149,8 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
 
-                infer = torch.tensor(np.asarray(infer)).to(self.device)
-                
+                infer = torch.tensor(np.asarray(infer.detach())).to(self.device)
+
                 print()
                 print(p[0].size())
                 if(infer is not None):
