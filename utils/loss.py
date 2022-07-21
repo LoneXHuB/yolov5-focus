@@ -165,7 +165,7 @@ class ComputeLoss:
                             if c == 1 :
                                 print('!!! FOUND INFO CLASS !!!')
                                 cropped = save_one_box(xyxy, img , save= False , BGR=True)
-                                cv2.imshow(cropped)
+                                cv2.imshow(im=cropped)
                                 cv2.waitKey(1) 
 
 
