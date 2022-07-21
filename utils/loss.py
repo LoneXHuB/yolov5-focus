@@ -165,7 +165,9 @@ class ComputeLoss:
                             if c == 1 :
                                 print('!!! FOUND INFO CLASS !!!')
                                 cropped = save_one_box(xyxy, img , save= False , BGR=True)
-                                cv2.imshow("cropped image of class 1", np.array(cropped.detach().cpu()))
+                                cropped = np.array(cropped.detach().cpu())
+                                print(f"image dims: {cropped.shape}")
+                                cv2.imshow("cropped image of class 1", cropped)
                                 cv2.waitKey(1) 
 
 
