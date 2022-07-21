@@ -132,7 +132,8 @@ class ComputeLoss:
         classes = None
         agnostic_nms = False
 
-        nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+        if(infer is not None):
+            nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
