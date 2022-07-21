@@ -131,7 +131,8 @@ class ComputeLoss:
         max_det=1000 # maximum detections per image
         classes = None
         agnostic_nms = False
-        
+
+        nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
@@ -156,7 +157,6 @@ class ComputeLoss:
                     print(infer[0].size())
                     print()
                     
-                    nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
                         # Rescale boxes from img_size to im0 size
