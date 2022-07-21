@@ -151,13 +151,7 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
 
-                print()
-                print(p[0].size())
                 if(infer is not None):
-                    print(type(infer[0]))
-                    print(infer[0].size())
-                    print()
-                    
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
                         # Rescale boxes from img_size to im0 size
@@ -167,11 +161,11 @@ class ComputeLoss:
                         for *xyxy, conf, cls in reversed(nms_pred[i]):
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                             c = int(cls)  # integer class
+                            print(f"class : {c}")
                             if c == 1 :
+                                print('!!! FOUND INFO CLASS !!!')
                                 cropped = save_one_box(xyxy, img , save= False , BGR=True)
-                                cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                                cv2.resizeWindow(str(p), cropped.shape[1], cropped.shape[0])
-                                cv2.imshow(str(p), cropped)
+                                cv2.imshow(cropped)
                                 cv2.waitKey(1) 
 
 
