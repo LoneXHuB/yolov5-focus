@@ -163,14 +163,16 @@ class ComputeLoss:
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                             c = int(cls)  # integer class
                             print(f"class : {c}")
-                            if c == 1 :
-                                print('!!! FOUND INFO CLASS !!!')
-                                cropped = save_one_box(xyxy, img , save= False , BGR=True)
-                                cropped = np.array(cropped.detach().cpu())
-                                print(f"image dims: {cropped.shape}")
-                                cropped = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
-                                cv2.imshow("cropped image of class 1", cropped)
-                                cv2.waitKey(1) 
+                            #if c == 1 :
+                            print('!!! FOUND INFO CLASS !!!')
+                            cropped = save_one_box(xyxy, img , save= False , BGR=True)
+                            cropped = np.array(cropped.detach().cpu())
+                            print(f"image dims: {cropped.shape}")
+                            
+                            print(cropped)
+                            cropped = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
+                            cv2.imshow("cropped image of class 1", cropped)
+                            cv2.waitKey(1) 
 
 
 
