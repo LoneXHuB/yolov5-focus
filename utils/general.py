@@ -794,7 +794,7 @@ def non_max_suppression(prediction,
     Returns:
          list of detections, on (n,6) tensor per image [xyxy, conf, cls]
     """
-    prediction = prediction[...,:18899,:]
+    prediction = prediction[...,:18900,:]
     print("type in non max supp")
     print(type(prediction))
     print(type(prediction[..., 4]))
