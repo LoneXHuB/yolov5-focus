@@ -11,6 +11,7 @@ from utils.torch_utils import de_parallel
 
 from utils.general import (non_max_suppression, xyxy2xywh, cv2, np)
 from utils.plots import  save_one_box
+from PIL import Image
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441
     # return positive, negative label smoothing BCE targets
@@ -167,6 +168,7 @@ class ComputeLoss:
                                 cropped = save_one_box(xyxy, img , save= False , BGR=True)
                                 cropped = np.array(cropped.detach().cpu())
                                 print(f"image dims: {cropped.shape}")
+                                cropped = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
                                 cv2.imshow("cropped image of class 1", cropped)
                                 cv2.waitKey(1) 
 
