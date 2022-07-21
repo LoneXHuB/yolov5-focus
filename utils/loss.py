@@ -126,9 +126,9 @@ class ComputeLoss:
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
 
-        conf_thres=0.25,  # confidence threshold
-        iou_thres=0.45,  # NMS IOU threshold
-        max_det=1000,  # maximum detections per image
+        conf_thres=0.25  # confidence threshold
+        iou_thres=0.45  # NMS IOU threshold
+        max_det=1000 # maximum detections per image
         classes = None
         agnostic_nms = False
         
