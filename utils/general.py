@@ -801,6 +801,7 @@ def non_max_suppression(prediction,
     print(type(prediction[..., 4]))
     print(prediction[..., 4].size())
     print(prediction[..., 4])
+    print(conf_thres)
     print()
 
     bs = prediction.shape[0]  # batch size
