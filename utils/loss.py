@@ -222,9 +222,6 @@ class ComputeLoss:
         ai = torch.arange(na, device=self.device).float().view(na, 1).repeat(1, nt)  # same as .repeat_interleave(nt)
         targets = torch.cat((targets.repeat(na, 1, 1), ai[..., None]), 2)  # append anchor indices
 
-        print("building targets:")
-        print(type(p))
-
         g = 0.5  # bias
         off = torch.tensor(
             [
