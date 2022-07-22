@@ -3,6 +3,7 @@
 Loss functions
 """
 
+from numpy import uint8
 import torch
 import torch.nn as nn
 
@@ -171,6 +172,7 @@ class ComputeLoss:
                             
                             print(cropped)
                             if(cropped.shape[0] > 0):
+                                cropped = (cropped * 255).asType(uint8)
                                 cropped = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
                                 cv2.imshow("cropped image of class 1", cropped)
                                 cv2.waitKey(1)
