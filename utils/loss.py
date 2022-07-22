@@ -12,6 +12,7 @@ from utils.torch_utils import de_parallel
 
 from utils.general import (non_max_suppression, xyxy2xywh, cv2, np)
 from utils.plots import  save_one_box
+from matplotlib.pyplot import imshow
 from PIL import Image
 
 def smooth_BCE(eps=0.1):  # https://github.com/ultralytics/yolov3/issues/238#issuecomment-598028441
@@ -173,9 +174,9 @@ class ComputeLoss:
                             print(cropped)
                             if(cropped.shape[0] > 0):
                                 cropped = (cropped * 255).astype(np.uint8)
+                                imshow(cropped)
                                 cropped = Image.fromarray(cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB))
-                                cv2.imshow("cropped image of class 1", cropped)
-                                cv2.waitKey(1)
+                                imshow(cropped)
                             else:
                                 print("image was cropped but was empty")
 
