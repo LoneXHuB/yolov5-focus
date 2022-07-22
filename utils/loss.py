@@ -167,7 +167,7 @@ class ComputeLoss:
                             print(f"class : {c}")
                             #if c == 1 :
                             print('!!! FOUND INFO CLASS !!!')
-                            cropped = save_one_box(xyxy, img ,file = 'test.jpg' , save= True , BGR=True)
+                            cropped = save_one_box(xyxy, img ,file = 'cropped/test.jpg' , save= True , BGR=True)
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
                             
