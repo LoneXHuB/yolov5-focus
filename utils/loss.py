@@ -174,10 +174,8 @@ class ComputeLoss:
                             if(cropped.shape[0] > 0):
                                 print(cropped)
                                 cropped = (cropped * 255).astype(np.uint8)
-                                Image.fromarray(cv2.cvtColor(cropped[0,...], cv2.COLOR_BGR2RGB)).save("test.jpg", quality=95, subsampling=0)
                                 cv2.imwrite("test.jpg",cropped[0,...])
                                 cv2.imshow(f"class{c}",cropped[0,...])
-                                cv2.waitKey(1)
                             else:
                                 print("image was cropped but was empty")
 
