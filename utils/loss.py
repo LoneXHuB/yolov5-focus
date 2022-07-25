@@ -174,9 +174,9 @@ class ComputeLoss:
                             if(cropped.shape[0] > 0):
                                 print(cropped)
                                 cropped = (cropped * 255).astype(np.uint8)
-                                cv2.imwrite(f"class{c}.jpg",cropped[0,...])
-                                im = cv2.imread(f"class{c}.jpg",0)
-                                imshow(im,cmap='gray')
+                                cv2.imwrite(f"class{c}{i}.jpg",cropped[0,...])
+                                im = cv2.imread(f"class{c}{i}.jpg",0)
+                                cv2.imshow(f"class{c}{i}.jpg",im)
                             else:
                                 print("image was cropped but was empty")
 
