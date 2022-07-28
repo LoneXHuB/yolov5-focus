@@ -167,7 +167,7 @@ class ComputeLoss:
                             print(f"class : {c}")
                             #if c == 1 :
                             print('!!! FOUND INFO CLASS !!!')
-                            cv2.imwrite(f"img-{i}.jpg",img)
+                            cv2.imwrite(f"img-{i}.jpg",np.array(img.detach().cpu()))
                             cropped = save_one_box(xyxy, img , save=False, BGR=True)
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
