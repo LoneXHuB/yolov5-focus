@@ -171,7 +171,7 @@ class ComputeLoss:
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
                             if(cropped.shape[0] > 0):
-                                cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],3))
+                                cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],cropped.shape[0]))
                                 print(f"reshaped dims: {cropped.shape}")
                                 print(cropped)
                                 cropped = (cropped * 255).astype(np.uint8)
