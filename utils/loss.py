@@ -170,9 +170,9 @@ class ComputeLoss:
                             cropped = save_one_box(xyxy, img , save=False, BGR=True)
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
-                            cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],3))
-                            print(f"reshaped dims: {cropped.shape}")
                             if(cropped.shape[0] > 0):
+                                cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],3))
+                                print(f"reshaped dims: {cropped.shape}")
                                 print(cropped)
                                 cropped = (cropped * 255).astype(np.uint8)
                                 cv2.imwrite(f"class{c}-{i}.jpg",cropped)
