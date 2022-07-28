@@ -173,13 +173,11 @@ class ComputeLoss:
                             if(cropped.shape[0] > 0):
                                 cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],cropped.shape[0]))
                                 print(f"reshaped dims: {cropped.shape}")
-                                print(cropped)
                                 cropped = (cropped * 255).astype(np.uint8)
                                 cv2.imwrite(f"class{c}-{i}.jpg",cropped)
+                                cv2.imwrite(f"img-{i}.jpg",img)
                             else:
                                 print("image was cropped but was empty")
-
-
 
                 # Objectness
                 iou = iou.detach().clamp(0).type(tobj.dtype)
