@@ -230,7 +230,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                                               gs,
                                               single_cls,
                                               hyp=hyp,
-                                              augment=True,
+                                              augment=False,
                                               cache=None if opt.cache == 'val' else opt.cache,
                                               rect=opt.rect,
                                               rank=LOCAL_RANK,
@@ -337,7 +337,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image : {im_arr}")
             print(f"orig image shape : {im_arr.shape}")
-            pth = my_absolute_dirpath + "/origImage.jpg"
+            pth = "origImage.jpg"
             if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
 
             ni = i + nb * epoch  # number integrated batches (since train start)
