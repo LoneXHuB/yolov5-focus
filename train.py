@@ -615,7 +615,7 @@ def main(opt, callbacks=Callbacks()):
             'flipud': (1, 0.0, 1.0),  # image flip up-down (probability)
             'fliplr': (0, 0.0, 1.0),  # image flip left-right (probability)
             'mosaic': (0, 0.0, .0),  # image mixup (probability)
-            'mixup': (1, 0.0, 1.0),  # image mixup (probability)
+            'mixup': (0, 0.0, 0.0),  # image mixup (probability)
             'copy_paste': (1, 0.0, 1.0)}  # segment copy-paste (probability)
 
         with open(opt.hyp, errors='ignore') as f:
