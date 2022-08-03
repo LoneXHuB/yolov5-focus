@@ -168,7 +168,7 @@ class ComputeLoss:
                             #if c == 1 :
                             print('!!! FOUND INFO CLASS !!!')
 
-                            cropped = save_one_box(xyxy, img , save=False, BGR=False)
+                            cropped = save_one_box(xyxy, img , save=False, BGR=True)
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
                             if(cropped.shape[0] > 0):
