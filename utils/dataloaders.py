@@ -415,10 +415,10 @@ class LoadImagesAndLabels(Dataset):
                  pad=0.0,
                  prefix=''):
         self.img_size = img_size
-        self.augment = augment and False
+        self.augment = augment
         self.hyp = hyp
         self.image_weights = image_weights
-        self.rect = False if image_weights else rect
+        self.rect = True
         self.mosaic = self.augment and not self.rect and False # load 4 images at a time into a mosaic (only during training)
         self.mosaic_border = [-img_size // 2, -img_size // 2]
         self.stride = stride
