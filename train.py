@@ -230,7 +230,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                                               gs,
                                               single_cls,
                                               hyp=hyp,
-                                              augment=False,
+                                              augment=True,
                                               cache=None if opt.cache == 'val' else opt.cache,
                                               rect=opt.rect,
                                               rank=LOCAL_RANK,
@@ -614,7 +614,7 @@ def main(opt, callbacks=Callbacks()):
             'perspective': (0, 0.0, 0.001),  # image perspective (+/- fraction), range 0-0.001
             'flipud': (1, 0.0, 1.0),  # image flip up-down (probability)
             'fliplr': (0, 0.0, 1.0),  # image flip left-right (probability)
-            'mosaic': (1, 0.0, 1.0),  # image mixup (probability)
+            'mosaic': (0, 0.0, .0),  # image mixup (probability)
             'mixup': (1, 0.0, 1.0),  # image mixup (probability)
             'copy_paste': (1, 0.0, 1.0)}  # segment copy-paste (probability)
 
