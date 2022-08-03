@@ -415,7 +415,7 @@ class LoadImagesAndLabels(Dataset):
                  pad=0.0,
                  prefix=''):
         self.img_size = img_size
-        self.augment = augment
+        self.augment = augment and False
         self.hyp = hyp
         self.image_weights = image_weights
         self.rect = False if image_weights else rect
