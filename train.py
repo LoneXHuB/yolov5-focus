@@ -63,6 +63,8 @@ from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_devic
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
 RANK = int(os.getenv('RANK', -1))
 WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
+import os
+my_absolute_dirpath = os.path.abspath(os.path.dirname(__file__))
 
 
 def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictionary
@@ -333,8 +335,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"orig image type : {type(ims_arr[i])}")
             print(f"orig image : {ims_arr[i]}")
             print(f"orig image shape : {ims_arr[i].shape}")
-
-            if not cv2.imwrite(r"origImage.jpg",ims_arr[i]): raise Exception(f"Couldnt write img-{i}.jpg")
+            pth = my_absolute_dirpath + "/origImage.jpg"
+            if not cv2.imwrite(pth ,ims_arr[i]): raise Exception(f"Couldnt write img-{i}.jpg")
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             imgs = imgs.to(device, non_blocking=True).float() / 255  # uint8 to float32, 0-255 to 0.0-1.0
