@@ -109,7 +109,7 @@ class Model(nn.Module):
                 self.yaml = yaml.safe_load(f)  # model dict
 
         # Define model
-        #ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
+        ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
         if nc and nc != self.yaml['nc']:
             LOGGER.info(f"Overriding model.yaml nc={self.yaml['nc']} with nc={nc}")
             self.yaml['nc'] = nc  # override yaml value
