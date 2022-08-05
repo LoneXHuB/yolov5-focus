@@ -340,7 +340,9 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
             pth = "origImage.jpg"
+            pth2 = "origImage[0].jpg"
             if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
+            if not cv2.imwrite(pth2 ,im_arr[0]): raise Exception(f"Couldnt write {pth}")
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             imgs = imgs.to(device, non_blocking=True).float() / 255  # uint8 to float32, 0-255 to 0.0-1.0
