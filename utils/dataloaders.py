@@ -137,7 +137,7 @@ def create_dataloader(path,
                   num_workers=nw,
                   sampler=None,
                   pin_memory=True,
-                  collate_fn=LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn), dataset
+                  ), dataset
 
 
 class InfiniteDataLoader(dataloader.DataLoader):
