@@ -330,11 +330,10 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             pbar = tqdm(pbar, total=nb, bar_format='{l_bar}{bar:10}{r_bar}{bar:-10b}')  # progress bar
         optimizer.zero_grad()
         for i, (imgs, targets, paths, _) in pbar:  # batch -------------------------------------------------------------
-            imgs = imgs[...,None,:,:]
             callbacks.run('on_train_batch_start')
             ims_arr = imgs.numpy()
             print(f"ims_arr shape {ims_arr.shape}")
-            im_arr = ims_arr[i]
+            #im_arr = ims_arr[i]
             im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]))
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
