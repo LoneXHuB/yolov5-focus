@@ -132,7 +132,8 @@ def create_dataloader(path,
     sampler = None if rank == -1 else distributed.DistributedSampler(dataset, shuffle=shuffle)
     loader = DataLoader if image_weights else InfiniteDataLoader  # only DataLoader allows for attribute updates
     return loader(dataset,
-                  batch_size=batch_size,
+                  batch_size=None,
+                  batch_sampler=None,
                   shuffle=shuffle and sampler is None,
                   num_workers=nw,
                   sampler=sampler,
