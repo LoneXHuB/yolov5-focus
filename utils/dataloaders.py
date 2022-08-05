@@ -136,7 +136,7 @@ def create_dataloader(path,
                   shuffle=shuffle and sampler is None,
                   num_workers=nw,
                   sampler=None,
-                  pin_memory=True,
+                  pin_memory=True
                   ), dataset
 
 
