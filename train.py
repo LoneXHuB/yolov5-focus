@@ -333,6 +333,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             imgs = imgs[...,None,:,:]
             callbacks.run('on_train_batch_start')
             ims_arr = imgs.numpy()
+            print(f"ims_arr shape {ims_arr.shape}")
             im_arr = ims_arr[i]
             im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]))
             print(f"orig image type : {type(im_arr)}")

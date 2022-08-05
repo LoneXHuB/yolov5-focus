@@ -11,7 +11,7 @@ Usage:
 import torch
 
 
-def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+def _create(name, pretrained=True, channels=1, classes=80, autoshape=True, verbose=True, device=None):
     """Creates or loads a YOLOv5 model
 
     Arguments:
