@@ -135,8 +135,7 @@ def create_dataloader(path,
                   shuffle=shuffle and sampler is None,
                   num_workers=nw,
                   sampler=sampler,
-                  pin_memory=True,
-                  collate_fn= None), dataset # None used to be LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn
+                  pin_memory=True), dataset # None used to be LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn
 
 
 class InfiniteDataLoader(dataloader.DataLoader):
