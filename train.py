@@ -335,7 +335,6 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             im_arr = ims_arr[i]
             im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]))
             print(f"orig image type : {type(im_arr)}")
-            print(f"orig image : {im_arr}")
             print(f"orig image shape : {im_arr.shape}")
             pth = "origImage.jpg"
             if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
@@ -621,7 +620,7 @@ def main(opt, callbacks=Callbacks()):
         with open(opt.hyp, errors='ignore') as f:
             hyp = yaml.safe_load(f)  # load hyps dict
             if 'anchors' not in hyp:  # anchors commented in hyp.yaml
-                hyp['anchors'] = 1 ##changed this from 3 to 1
+                hyp['anchors'] = 3
         opt.noval, opt.nosave, save_dir = True, True, Path(opt.save_dir)  # only val/save final epoch
         # ei = [isinstance(x, (int, float)) for x in hyp.values()]  # evolvable indices
         evolve_yaml, evolve_csv = save_dir / 'hyp_evolve.yaml', save_dir / 'evolve.csv'
