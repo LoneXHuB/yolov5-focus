@@ -134,7 +134,8 @@ class ComputeLoss:
         max_det=1000 # maximum detections per image
         classes = 3
         agnostic_nms = False
-
+        print(f"targets shape {targets.shape}")
+        print(f"tagets[0] : {targets[0]}")
         if(infer is not None):
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
         # Losses
@@ -143,7 +144,6 @@ class ComputeLoss:
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
             
             print(f"pi shape : {pi.shape}")
-
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
