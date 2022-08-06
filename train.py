@@ -332,6 +332,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         for i, (imgs, targets, paths, _) in pbar:  # batch -------------------------------------------------------------
             print(f"imgs shape {imgs.shape}")
             imgs = imgs[...,None,:,:]
+            test = np.reshape(imgs[...,0,:,:], (imgs[...,0,:,:].shape[1], imgs[...,0,:,:].shape[2],imgs[...,0,:,:].shape[0]))
             callbacks.run('on_train_batch_start')
             ims_arr = imgs.numpy()
             print(f"ims_arr shape {ims_arr.shape}")
@@ -342,7 +343,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             pth = "origImage.jpg"
             pth2 = "origImage[0].jpg"
             if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
-            if not cv2.imwrite(pth2 ,imgs[...,0,:,:]): raise Exception(f"Couldnt write {pth2}")
+            if not cv2.imwrite(pth2 ,test): raise Exception(f"Couldnt write {pth2}")
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             imgs = imgs.to(device, non_blocking=True).float() / 255  # uint8 to float32, 0-255 to 0.0-1.0
