@@ -331,8 +331,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         optimizer.zero_grad()
         for i, (imgs, targets, paths, _) in pbar:  # batch -------------------------------------------------------------
             print(f"imgs shape {imgs.shape}")
+            test = imgs
             imgs = imgs[...,None,:,:]
-            test = np.reshape(imgs[...,0,:,:], (imgs[...,0,:,:].shape[1], imgs[...,0,:,:].shape[2],imgs[...,0,:,:].shape[0]))
             callbacks.run('on_train_batch_start')
             ims_arr = imgs.numpy()
             print(f"ims_arr shape {ims_arr.shape}")
