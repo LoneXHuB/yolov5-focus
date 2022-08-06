@@ -171,7 +171,7 @@ class ComputeLoss:
                             cropped = save_one_box(xyxy, img , save=False, BGR=True)
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
-                            if(cropped.shape[0] > 0):
+                            if(cropped.shape[0] > 0 and cropped.shape[1] > 0 and cropped.shape[2] > 0):
                                 cropped = np.moveaxis(cropped, 0, -1)
                                 print(f"reshaped dims: {cropped.shape}")
                                 cropped = (cropped * 255).astype(np.uint8)
