@@ -176,7 +176,7 @@ class ComputeLoss:
                                 print(f"reshaped dims: {cropped.shape}")
                                 cropped = (cropped * 255).astype(np.uint8)
                                 cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
-                                cv2.imwrite(f"bbox{i}.jpg",cropped)
+                                if not cv2.imwrite(f"bbox{i}.jpg",cropped): raise Exception(f"Could not write bbox{i} image")
                             else:
                                 print("image was cropped but was empty")
 
