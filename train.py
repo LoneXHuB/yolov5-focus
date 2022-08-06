@@ -60,9 +60,9 @@ from utils.metrics import fitness
 from utils.plots import plot_evolve, plot_labels
 from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
 
-LOCAL_RANK = -1 #int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
-RANK = -1 #3int(os.getenv('RANK', -1))
-WORLD_SIZE = 1 #int(os.getenv('WORLD_SIZE', 1))
+LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
+RANK = int(os.getenv('RANK', -1))
+WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 import os
 my_absolute_dirpath = os.path.abspath(os.path.dirname(__file__))
 
@@ -123,14 +123,14 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         with torch_distributed_zero_first(LOCAL_RANK):
             weights = attempt_download(weights)  # download if not found locally
         ckpt = torch.load(weights, map_location='cpu')  # load checkpoint to CPU to avoid CUDA memory leak
-        model = Model(cfg or ckpt['model'].yaml, ch=1, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
+        model = Model(cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfg or hyp.get('anchors')) and not resume else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, model.state_dict(), exclude=exclude)  # intersect
         model.load_state_dict(csd, strict=False)  # load
         LOGGER.info(f'Transferred {len(csd)}/{len(model.state_dict())} items from {weights}')  # report
     else:
-        model = Model(cfg, ch=1, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
+        model = Model(cfg, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
     amp = check_amp(model)  # check AMP
 
     # Freeze
@@ -230,7 +230,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                                               gs,
                                               single_cls,
                                               hyp=hyp,
-                                              augment=False,
+                                              augment=True,
                                               cache=None if opt.cache == 'val' else opt.cache,
                                               rect=opt.rect,
                                               rank=LOCAL_RANK,
@@ -335,12 +335,12 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             ims_arr = imgs.numpy()
             print(f"ims_arr shape {ims_arr.shape}")
             im_arr = ims_arr[i]
-            #im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]),order='A')
             im_arr = np.moveaxis(im_arr, 0, -1)
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
             pth = f"origImage{i}.jpg"
-            if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
+            sv_img = cv2.cvtColor(im_arr, cv2.COLOR_BGR2RGB)
+            if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")
 
             ni = i + nb * epoch  # number integrated batches (since train start)
             imgs = imgs.to(device, non_blocking=True).float() / 255  # uint8 to float32, 0-255 to 0.0-1.0

@@ -172,10 +172,11 @@ class ComputeLoss:
                             cropped = np.array(cropped.detach().cpu())
                             print(f"image dims: {cropped.shape}")
                             if(cropped.shape[0] > 0):
-                                cropped = np.reshape(cropped, (cropped.shape[1], cropped.shape[2],cropped.shape[0]))
+                                cropped = np.moveaxis(cropped, 0, -1)
                                 print(f"reshaped dims: {cropped.shape}")
                                 cropped = (cropped * 255).astype(np.uint8)
-                                cv2.imwrite(f"bbox.jpg",cropped)
+                                cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
+                                cv2.imwrite(f"bbox{i}.jpg",cropped)
                             else:
                                 print("image was cropped but was empty")
 

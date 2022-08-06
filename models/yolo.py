@@ -98,7 +98,7 @@ class Detect(nn.Module):
 
 class Model(nn.Module):
     # YOLOv5 model
-    def __init__(self, cfg='yolov5s.yaml', ch=1, nc=None, anchors=None):  # model, input channels, number of classes
+    def __init__(self, cfg='yolov5s.yaml', ch=3, nc=None, anchors=None):  # model, input channels, number of classes
         super().__init__()
         if isinstance(cfg, dict):
             self.yaml = cfg  # model dict
@@ -109,7 +109,7 @@ class Model(nn.Module):
                 self.yaml = yaml.safe_load(f)  # model dict
 
         # Define model
-        #ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
+        ch = self.yaml['ch'] = self.yaml.get('ch', ch)  # input channels
         if nc and nc != self.yaml['nc']:
             LOGGER.info(f"Overriding model.yaml nc={self.yaml['nc']} with nc={nc}")
             self.yaml['nc'] = nc  # override yaml value

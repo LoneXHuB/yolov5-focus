@@ -11,7 +11,7 @@ Usage:
 import torch
 
 
-def _create(name, pretrained=True, channels=1, classes=80, autoshape=True, verbose=True, device=None):
+def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
     """Creates or loads a YOLOv5 model
 
     Arguments:
@@ -75,7 +75,7 @@ def yolov5n(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=Tr
     return _create('yolov5n', pretrained, channels, classes, autoshape, _verbose, device)
 
 
-def yolov5s(pretrained=True, channels=1, classes=80, autoshape=True, _verbose=True, device=None):
+def yolov5s(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=True, device=None):
     # YOLOv5-small model https://github.com/ultralytics/yolov5
     return _create('yolov5s', pretrained, channels, classes, autoshape, _verbose, device)
 

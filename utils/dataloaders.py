@@ -128,7 +128,6 @@ def create_dataloader(path,
     batch_size = min(batch_size, len(dataset))
     nd = torch.cuda.device_count()  # number of CUDA devices
     nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
-    print(f"{nw} number of workers --------")
     sampler = None if rank == -1 else distributed.DistributedSampler(dataset, shuffle=shuffle)
     loader = DataLoader if image_weights else InfiniteDataLoader  # only DataLoader allows for attribute updates
     return loader(dataset,
@@ -474,11 +473,8 @@ class LoadImagesAndLabels(Dataset):
         self.im_files = list(cache.keys())  # update
         self.label_files = img2label_paths(cache.keys())  # update
         n = len(shapes)  # number of images
-        print(f'{n} images --------')
-        print(f'{stride} stride ------')
         bi = np.floor(np.arange(n) / batch_size).astype(np.int)  # batch index
         nb = bi[-1] + 1  # number of batches
-        print(f'{nb} number of batches')
         self.batch = bi  # batch index of image
         self.n = n
         self.indices = range(n)
