@@ -340,7 +340,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]))
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
-            pth = "origImage.jpg"
+            pth = f"origImage{i}.jpg"
             pth2 = "origImage[0].jpg"
             if not cv2.imwrite(pth ,im_arr): raise Exception(f"Couldnt write {pth}")
             if not cv2.imwrite(pth2 ,test): raise Exception(f"Couldnt write {pth2}")
