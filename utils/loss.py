@@ -143,7 +143,6 @@ class ComputeLoss:
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
             
             print(f"pi shape : {pi.shape}")
-            print(f"pi : {pi}")
 
             n = b.shape[0]  # number of targets
             if n:
