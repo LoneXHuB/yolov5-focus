@@ -142,7 +142,18 @@ class ComputeLoss:
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
             
+            #print b image
+            bs_arr = b.detach().cpu().numpy() 
+            print(f"bs_arr shape {bs_arr.shape}")
+            b_arr = bs_arr[i] * 255
+            b_arr = np.moveaxis(b_arr, 0, -1)
+            print(f"b image type : {type(b_arr)}")
+            print(f"b image shape : {b_arr.shape}")
+            pth = f"bImage{i}.jpg"
+            sv_img = cv2.cvtColor(b_arr, cv2.COLOR_BGR2RGB)
+            if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")
             print(f"pi shape : {pi.shape}")
+
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0

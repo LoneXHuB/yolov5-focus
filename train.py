@@ -359,7 +359,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             
             ims_arr = imgs.detach().cpu().numpy()
             print(f"ims_arr shape {ims_arr.shape}")
-            im_arr = ims_arr[i]
+            im_arr = ims_arr[i] * 255
             im_arr = np.moveaxis(im_arr, 0, -1)
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
