@@ -132,7 +132,7 @@ class ComputeLoss:
         conf_thres=0.25  # confidence threshold
         iou_thres=0.45  # NMS IOU threshold
         max_det=1000 # maximum detections per image
-        classes = None
+        classes = 3
         agnostic_nms = False
 
         if(infer is not None):
@@ -142,6 +142,7 @@ class ComputeLoss:
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
             
+            print(f"pi shape : {pi.shape}")
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
