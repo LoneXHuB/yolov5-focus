@@ -332,7 +332,6 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         for i, (imgs, targets, paths, _) in pbar:  # batch -------------------------------------------------------------
             print(f"imgs shape {imgs.shape}")
             test =  np.reshape(imgs.numpy(), (imgs.shape[1], imgs.shape[2],imgs.shape[0]))
-            imgs = imgs[...,None,:,:]
             callbacks.run('on_train_batch_start')
             ims_arr = imgs.numpy()
             print(f"ims_arr shape {ims_arr.shape}")
