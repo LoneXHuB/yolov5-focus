@@ -357,7 +357,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"batch iteration {i}")
             print(f"imgs shape{imgs.shape}")
             
-            ims_arr = imgs.numpy()
+            ims_arr = imgs.detach().cpu().numpy()
             print(f"ims_arr shape {ims_arr.shape}")
             im_arr = ims_arr[i]
             im_arr = np.moveaxis(im_arr, 0, -1)
