@@ -336,7 +336,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"ims_arr shape {ims_arr.shape}")
             im_arr = ims_arr[i]
             #im_arr = np.reshape(im_arr, (im_arr.shape[1], im_arr.shape[2],im_arr.shape[0]),order='A')
-            im_arr = np.moveaxis(im_arr, -1, 0)
+            im_arr = np.moveaxis(im_arr, 0, -1)
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
             pth = f"origImage{i}.jpg"
