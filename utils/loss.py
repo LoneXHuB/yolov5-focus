@@ -138,7 +138,8 @@ class ComputeLoss:
             classes = None
             agnostic_nms = False
             nc = infer[0].shape[2] - 5  # number of classes
-            print(f"targets boxes shape {tbox.shape}")
+            print(f"targets boxes {tbox}")
+            print(f"targets boxes shape {tbox[0].shape}")
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
             print(f"nms prediction shape : {nms_pred[0].detach().cpu().numpy().shape}")
