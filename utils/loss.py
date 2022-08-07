@@ -152,7 +152,7 @@ class ComputeLoss:
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
                 pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions
-
+                print(f"b : {b}")
                 # Regression
                 pxy = pxy.sigmoid() * 2 - 0.5
                 pwh = (pwh.sigmoid() * 2) ** 2 * anchors[i]
@@ -162,7 +162,7 @@ class ComputeLoss:
                 print(pbox.size())
                 print(pcls.size())
                 resnt_classifier = ResNet50(3, self.nc)
-                cls = apply_classifier_lx(pi)
+                #resnetplcls = apply_classifier_lx(pbox,pcls,im[b],im0s[b])
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
