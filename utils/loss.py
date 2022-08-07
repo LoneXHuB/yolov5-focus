@@ -4,13 +4,14 @@ Loss functions
 """
 
 from numpy import uint8
+from rexnet import ResNet50
 import torch
 import torch.nn as nn
 
 from utils.metrics import bbox_iou
 from utils.torch_utils import de_parallel
 
-from utils.general import (non_max_suppression, xyxy2xywh, cv2, np)
+from utils.general import (non_max_suppression, xyxy2xywh, cv2, np, scale_coords, apply_classifier_lx)
 from utils.plots import  save_one_box
 from matplotlib.pyplot import imshow,show
 from PIL import Image
@@ -123,21 +124,25 @@ class ComputeLoss:
         self.anchors = m.anchors
         self.device = device
 
-    def __call__(self, p, targets, infer, img):  # predictions, targets
+    def __call__(self, p, targets, infer, im, im0s):  # predictions, targets
         lcls = torch.zeros(1, device=self.device)  # class loss
         lbox = torch.zeros(1, device=self.device)  # box loss
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
-
-        conf_thres=0.25  # confidence threshold
-        iou_thres=0.45  # NMS IOU threshold
-        max_det=1000 # maximum detections per image
-        classes = 3
-        agnostic_nms = False
-        print(f"targets shape {targets.shape}")
-        print(f"tagets[0] : {targets[0]}")
+        
+        #NMS
         if(infer is not None):
+            conf_thres=0.25  # confidence threshold
+            iou_thres=0.45  # NMS IOU threshold
+            max_det=1000 # maximum detections per image
+            classes = None
+            agnostic_nms = False
+            nc = infer[0].shape[2] - 5  # number of classes
+            print(f"targets shape {targets.shape}")
+            print(f"tagets[0] : {targets[0]}")
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
+
+            print(f"nms prediction shape : {nms_pred.detach().cpu().numpy().shape}")
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
@@ -155,12 +160,14 @@ class ComputeLoss:
                 pbox = torch.cat((pxy, pwh), 1)  # predicted box
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
-
-                if(infer is not None):
+                print(pbox.size())
+                resnt_classifier = ResNet50(3 , 3)
+                apply_classifier_lx(pi, )
+                """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
                         # Rescale boxes from img_size to im0 size
-                        #nms_pred[i][:, :4] = scale_coords(im.shape[2:], nms_pred[i][:, :4], im0.shape).round()
+                        nms_pred[i][:, :4] = scale_coords(im.shape[2:], nms_pred[i][:, :4], im0.shape).round()
 
                         # Write results
                         for *xyxy, conf, cls in reversed(nms_pred[i]):
@@ -180,7 +187,7 @@ class ComputeLoss:
                                 cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2RGB)
                                 if not cv2.imwrite(f"bbox{i}.jpg",cropped): raise Exception(f"Could not write bbox{i} image")
                             else:
-                                print("image was cropped but was empty")
+                                print("image was cropped but was empty")"""
 
                 # Objectness
                 iou = iou.detach().clamp(0).type(tobj.dtype)

@@ -358,23 +358,23 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             print(f"imgs shape{imgs.shape}")
             
             ims_arr = imgs.detach().cpu().numpy()
+            ims_arr = np.moveaxis(ims_arr, 1, -1)
             print(f"ims_arr shape {ims_arr.shape}")
             im_arr = ims_arr[i] * 255
-            im_arr = np.moveaxis(im_arr, 0, -1)
             print(f"orig image type : {type(im_arr)}")
             print(f"orig image shape : {im_arr.shape}")
             pth = f"origImage{i}.jpg"
             sv_img = cv2.cvtColor(im_arr, cv2.COLOR_BGR2RGB)
+
             if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")
 
             # Forward
             with torch.cuda.amp.autocast(amp):
                 pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
-                print(i)
                 if isinstance(pred, Tuple):
-                    loss, loss_items = compute_loss(pred[1], targets.to(device), pred, imgs)  # loss scaled by batch_size
+                    loss, loss_items = compute_loss(pred[1], targets.to(device), pred, imgs, ims_arr)  # loss scaled by batch_size
                 else:
-                    loss, loss_items = compute_loss(pred, targets.to(device), None, imgs)  # loss scaled by batch_size
+                    loss, loss_items = compute_loss(pred, targets.to(device), None, imgs, ims_arr)  # loss scaled by batch_size
                     
                 if RANK != -1:
                     loss *= WORLD_SIZE  # gradient averaged between devices in DDP mode

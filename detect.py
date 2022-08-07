@@ -28,6 +28,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from rexnet import ResNet50
 
 import torch
 import torch.backends.cudnn as cudnn
@@ -40,8 +41,8 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
-from utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
-                           increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh)
+from utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2, np,
+                           increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh, apply_classifier)
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
@@ -120,21 +121,23 @@ def run(
         # Inference
         visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
         pred = model(im, augment=augment, visualize=visualize)
-        pred = torch.stack((pred,pred,pred), dim = 1)
         t3 = time_sync()
         dt[1] += t3 - t2
-
+        
         # NMS   
         print(pred.size())
         print(type(pred))
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
-        print(pred)
         dt[2] += time_sync() - t3
 
+        print(f"im shape :: {im.detach().cpu().numpy().shape}")
+        print(f"im0s shape :: {np.array(im0s).shape}")
 
+        
+        classifier_model = ResNet50(3,3).to(device)
         # Second-stage classifier (optional)
-        # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
-
+        pred = apply_classifier(pred, classifier_model, im, im0s)
+        
         # Process predictions
         for i, det in enumerate(pred):  # per image
             seen += 1
