@@ -162,7 +162,6 @@ class ComputeLoss:
                 lbox += (1.0 - iou).mean()  # iou loss
                 print(pbox.size())
                 resnt_classifier = ResNet50(3 , 3)
-                apply_classifier_lx(pi, )
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
