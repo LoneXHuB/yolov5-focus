@@ -206,9 +206,11 @@ def run(
         out, train_out = model(im) if training else model(im, augment=augment, val=True)  # inference, loss outputs
         dt[1] += time_sync() - t2
 
+        ims_arr = im.detach().cpu().numpy()
+        ims_arr = np.moveaxis(ims_arr, 1, -1)
         # Loss
         if compute_loss:
-            loss += compute_loss([x.float() for x in train_out], targets, None, None)[1]  # box, obj, cls
+            loss += compute_loss([x.float() for x in train_out], targets, None, None, im, ims_arr)[1]  # box, obj, cls
 
         # NMS
         targets[:, 2:] *= torch.tensor((width, height, width, height), device=device)  # to pixels
