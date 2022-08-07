@@ -955,9 +955,9 @@ def apply_classifier_lx(x, model, img, im0):
 
             # Reshape and pad cutouts
             b = xyxy2xywh(d[:, :4])  # boxes
-            b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-            b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
-            d[:, :4] = xywh2xyxy(b).long()
+            b[..., 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+            b[..., 2:] = b[:, 2:] * 1.3 + 30  # pad
+            d[..., :4] = xywh2xyxy(b).long()
 
             # Rescale boxes from img_size to im0 size
             scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
@@ -988,6 +988,7 @@ def apply_classifier(x, model, img, im0):
 
     for i, d in enumerate(x):  # per image
         if d is not None and len(d):
+            print(f"d shape : {d}")
             d = d.clone()
             print(d)
             # Reshape and pad cutouts

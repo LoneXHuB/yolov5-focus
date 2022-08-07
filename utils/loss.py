@@ -137,9 +137,7 @@ class ComputeLoss:
             max_det=1000 # maximum detections per image
             classes = None
             agnostic_nms = False
-            nc = infer[0].shape[2] - 5  # number of classes
-            print(f"targets boxes {tbox}")
-            print(f"targets boxes shape {tbox[0].shape}")
+            print(f"targets boxes shape {len(tbox),tbox[0].shape}")
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
             print(f"nms prediction shape : {nms_pred[0].detach().cpu().numpy().shape}")
@@ -162,6 +160,7 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
                 print(pbox.size())
+                print(pcls.size())
                 resnt_classifier = ResNet50(3, self.nc)
                 cls = apply_classifier_lx(pi)
                 """if(infer is not None):
