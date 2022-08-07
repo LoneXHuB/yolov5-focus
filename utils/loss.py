@@ -138,11 +138,11 @@ class ComputeLoss:
             classes = None
             agnostic_nms = False
             nc = infer[0].shape[2] - 5  # number of classes
-            print(f"targets shape {targets.shape}")
-            print(f"tagets[0] : {targets[0]}")
+            print(f"targets boxes shape {tbox.shape}")
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
             print(f"nms prediction shape : {nms_pred[0].detach().cpu().numpy().shape}")
+            
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
@@ -161,7 +161,8 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
                 print(pbox.size())
-                resnt_classifier = ResNet50(3 , 3)
+                resnt_classifier = ResNet50(3, self.nc)
+                cls = apply_classifier_lx(pi)
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):

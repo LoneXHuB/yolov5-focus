@@ -975,7 +975,9 @@ def apply_classifier_lx(x, model, img, im0):
                 ims.append(im)
 
             pred_cls2 = model(torch.Tensor(ims).to(d.device)).argmax(1)  # classifier prediction
-            x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
+            print(pred_cls2)
+            print(pred_cls1)
+            #x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
     return x
 
 def apply_classifier(x, model, img, im0):
