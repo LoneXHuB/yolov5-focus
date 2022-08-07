@@ -210,7 +210,7 @@ def run(
         ims_arr = np.moveaxis(ims_arr, 1, -1)
         # Loss
         if compute_loss:
-            loss += compute_loss([x.float() for x in train_out], targets, None, None, im, ims_arr)[1]  # box, obj, cls
+            loss += compute_loss([x.float() for x in train_out], targets, None, im, ims_arr)[1]  # box, obj, cls
 
         # NMS
         targets[:, 2:] *= torch.tensor((width, height, width, height), device=device)  # to pixels
