@@ -142,7 +142,7 @@ class ComputeLoss:
             print(f"tagets[0] : {targets[0]}")
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
-            print(f"nms prediction shape : {nms_pred.detach().cpu().numpy().shape}")
+            print(f"nms prediction shape : {nms_pred[0].detach().cpu().numpy().shape}")
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
