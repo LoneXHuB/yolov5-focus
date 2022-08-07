@@ -372,9 +372,9 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             with torch.cuda.amp.autocast(amp):
                 pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
                 if isinstance(pred, Tuple):
-                    loss, loss_items = compute_loss(pred[1], targets.to(device), pred, imgs, ims_arr)  # loss scaled by batch_size
+                    loss, loss_items = compute_loss(pred[1], targets.to(device), pred, im=imgs, im0s=ims_arr)  # loss scaled by batch_size
                 else:
-                    loss, loss_items = compute_loss(pred, targets.to(device), None, imgs, ims_arr)  # loss scaled by batch_size
+                    loss, loss_items = compute_loss(pred, targets.to(device), None, im=imgs, im0s=ims_arr)  # loss scaled by batch_size
                     
                 if RANK != -1:
                     loss *= WORLD_SIZE  # gradient averaged between devices in DDP mode
