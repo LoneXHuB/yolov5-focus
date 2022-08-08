@@ -163,8 +163,6 @@ class ComputeLoss:
                 print(pbox.size())
                 print(pcls.size())
                 resnt_classifier = ResNet50(3, self.nc)
-                im = im.to(self.device)
-                im0s = im0s.to(self.device)
                 resnetplcls = apply_classifier_lx(pbox,pcls,im[b],im0s[b])
 
                 """if(infer is not None):
