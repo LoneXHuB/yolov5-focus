@@ -945,7 +945,7 @@ def print_mutation(results, hyp, save_dir, bucket, prefix=colorstr('evolve: ')):
     if bucket:
         os.system(f'gsutil cp {evolve_csv} {evolve_yaml} gs://{bucket}')  # upload
 
-def apply_classifier_lx(x, model, img, im0):
+def apply_classifier_lx(pbox, pcls, model, img, im0):
     # Apply a second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
     im0 = [im0] if isinstance(im0, np.ndarray) else im0
@@ -953,7 +953,7 @@ def apply_classifier_lx(x, model, img, im0):
         d = d.clone()
 
         # Reshape and pad cutouts
-        b = xyxy2xywh(d[:, :4])  # boxes
+        b = pbox  # boxes
         b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
         b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
         d[:, :4] = xywh2xyxy(b).long()
@@ -962,7 +962,7 @@ def apply_classifier_lx(x, model, img, im0):
         scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
 
         # Classes
-        pred_cls1 = d[:, 5].long()
+        pred_cls1 = pcls
         ims = []
         for a in d:
             cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
@@ -1001,6 +1001,7 @@ def apply_classifier(x, model, img, im0):
 
             # Classes
             pred_cls1 = d[:, 5].long()
+            print(f"predicted class : {pred_cls1.shape}")
             ims = []
             for a in d:
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
