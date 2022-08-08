@@ -163,7 +163,10 @@ class ComputeLoss:
                 print(pbox.size())
                 print(pcls.size())
                 resnt_classifier = ResNet50(3, self.nc)
+                im = im.to(self.device)
+                im0s = im0s.to(self.device)
                 resnetplcls = apply_classifier_lx(pbox,pcls,im[b],im0s[b])
+
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
                     if len(nms_pred[i]):
@@ -189,7 +192,7 @@ class ComputeLoss:
                                 if not cv2.imwrite(f"bbox{i}.jpg",cropped): raise Exception(f"Could not write bbox{i} image")
                             else:
                                 print("image was cropped but was empty")"""
-
+                 
                 # Objectness
                 iou = iou.detach().clamp(0).type(tobj.dtype)
                 if self.sort_obj_iou:
