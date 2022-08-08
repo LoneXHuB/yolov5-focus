@@ -966,7 +966,7 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
             # Classes
             pred_cls1 = torch.argmax(pcls,1).long()
             print(f"pred_cls1 : {pred_cls1.size()}")
-            print(f"im0 shape in classifier lx : {im0.size()}")
+            print(f"im0 shape in classifier lx : {image.size()}")
             ims = []
             a = d[i]
             cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
@@ -974,7 +974,7 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
 
             im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
             if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
-            if not cv2.imwrite(f"im0{i}.jpg" ,image): raise Exception(f"Couldnt write im0{i}.jpg")
+            if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
 
             im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
             im /= 255  # 0 - 255 to 0.0 - 1.0
