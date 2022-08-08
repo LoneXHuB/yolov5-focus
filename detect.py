@@ -121,6 +121,7 @@ def run(
         # Inference
         visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
         pred = model(im, augment=augment, visualize=visualize)
+        pred = torch.cat((pred,pred,pred), dim = 1)
         t3 = time_sync()
         dt[1] += t3 - t2
         
@@ -137,7 +138,7 @@ def run(
         classifier_model = ResNet50(3,3).to(device)
         # Second-stage classifier (optional)
         pred = apply_classifier(pred, classifier_model, im, im0s)
-        
+
         # Process predictions
         for i, det in enumerate(pred):  # per image
             seen += 1

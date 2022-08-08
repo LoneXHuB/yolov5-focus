@@ -950,17 +950,17 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
     # Apply a second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
     im0 = [im0] if isinstance(im0, np.ndarray) else im0
+    if pbox is not None and len(pbox):
+        d = pbox.clone()
+
+        # Reshape and pad cutouts
+        b = pbox  # boxes
+        d = d.clone()
+        b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+        b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+        d[:, :4] = xywh2xyxy(b).long()
+
     for i, image in enumerate(img):
-        if pbox is not None and len(pbox):
-            d = pbox.clone()
-
-            # Reshape and pad cutouts
-            b = pbox  # boxes
-            d = d.clone()
-            b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-            b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
-            d[:, :4] = xywh2xyxy(b).long()
-
             # Rescale boxes from img_size to im0 size
             scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
 
@@ -968,14 +968,14 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
             pred_cls1 = torch.argmax(pcls,1).long()
             print(f"pred_cls1 : {pred_cls1.size()}")
             ims = []
-            for a in d:
-                cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
-                im = cv2.resize(cutout, (224, 224))  # BGR
+            a = d[i]
+            cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
+            im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
 
-                im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-                im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
-                im /= 255  # 0 - 255 to 0.0 - 1.0
-                ims.append(im)
+            im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+            im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
+            im /= 255  # 0 - 255 to 0.0 - 1.0
+            ims.append(im)
 
             pred_cls2 = model(torch.Tensor(ims).to(d.device)).argmax(1)  # classifier prediction
             print(f"pred cls2 : {pred_cls2}")
