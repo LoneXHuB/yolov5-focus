@@ -959,7 +959,7 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
         b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
         d[:, :4] = xywh2xyxy(b).long()
 
-    for i, image in enumerate(img):
+    for i, image in enumerate(im0):
             # Rescale boxes from img_size to im0 size
             scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
 
@@ -974,7 +974,7 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
 
             im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
             if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
-            if not cv2.imwrite(f"im0{i}.jpg" ,im0[]): raise Exception(f"Couldnt write im0{i}.jpg")
+            if not cv2.imwrite(f"im0{i}.jpg" ,image): raise Exception(f"Couldnt write im0{i}.jpg")
 
             im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
             im /= 255  # 0 - 255 to 0.0 - 1.0
