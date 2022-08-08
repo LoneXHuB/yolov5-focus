@@ -973,7 +973,6 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
             im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
 
             im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-            print(f"im shape {im.shape}")
             if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
 
             im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
