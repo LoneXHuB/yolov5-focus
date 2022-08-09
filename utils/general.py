@@ -946,16 +946,16 @@ def print_mutation(results, hyp, save_dir, bucket, prefix=colorstr('evolve: ')):
     if bucket:
         os.system(f'gsutil cp {evolve_csv} {evolve_yaml} gs://{bucket}')  # upload
 
-def apply_classifier_lx(pbox, pcls, model, img, im0):
+def apply_classifier_lx(pbox, cls, model, img, im0):
     # Apply a second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
     with torch.no_grad():
         if pbox is not None and len(pbox):
-            d = pbox.clone()
+            pcls = cls.detach().clone()
+            d = pbox.detach().clone()
 
             # Reshape and pad cutouts
-            b = pbox  # boxes
-            d = d.clone()
+            b = d.clone()  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
             b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
             d[:, :4] = xywh2xyxy(b).long()
