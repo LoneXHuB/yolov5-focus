@@ -131,6 +131,7 @@ class ComputeLoss:
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
         
         #NMS
+        """
         if(infer is not None):
             conf_thres=0.25  # confidence threshold
             iou_thres=0.45  # NMS IOU threshold
@@ -141,7 +142,7 @@ class ComputeLoss:
             nms_pred = non_max_suppression(infer[0], conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
             print(f"nms prediction shape : {nms_pred[0].detach().cpu().numpy().shape}")
-            
+        """
         # Losses
         for i, pi in enumerate(p):  # layer index, layer predictions
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
