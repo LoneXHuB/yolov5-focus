@@ -949,41 +949,42 @@ def print_mutation(results, hyp, save_dir, bucket, prefix=colorstr('evolve: ')):
 def apply_classifier_lx(pbox, pcls, model, img, im0):
     # Apply a second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
-    if pbox is not None and len(pbox):
-        d = pbox.clone()
+    with torch.no_grad:
+        if pbox is not None and len(pbox):
+            d = pbox.clone()
 
-        # Reshape and pad cutouts
-        b = pbox  # boxes
-        d = d.clone()
-        b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-        b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
-        d[:, :4] = xywh2xyxy(b).long()
+            # Reshape and pad cutouts
+            b = pbox  # boxes
+            d = d.clone()
+            #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+            #b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+            d[:, :4] = xywh2xyxy(b).long()
 
-    for i, image in enumerate(im0):
-            # Rescale boxes from img_size to im0 size
-            scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+        for i, image in enumerate(im0):
+                # Rescale boxes from img_size to im0 size
+                scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
 
-            # Classes
-            pred_cls1 = torch.argmax(pcls,1).long()
-            print(f"pred_cls1 : {pred_cls1.size()}")
-            print(f"im0 shape in classifier lx : {image.size()}")
-            ims = []
-            a = d[i]
-            cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
-            im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
-            print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
-            im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-            if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
-            if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
+                # Classes
+                pred_cls1 = torch.argmax(pcls,1).long()
+                print(f"pred_cls1 : {pred_cls1.size()}")
+                print(f"im0 shape in classifier lx : {image.size()}")
+                ims = []
+                a = d[i]
+                cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
+                im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
+                print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
+                im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
+                if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
+                if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
 
-            im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
-            im /= 255  # 0 - 255 to 0.0 - 1.0
-            ims.append(im)
+                im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
+                im /= 255  # 0 - 255 to 0.0 - 1.0
+                ims.append(im)
 
-            #pred_cls2 = model(torch.Tensor(ims).to(d.device)).argmax(1)  # classifier prediction
-            #print(f"pred cls2 : {pred_cls2}")
-            #print(f"pred cls1 : {pred_cls1}")
-            #x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
+                #pred_cls2 = model(torch.Tensor(ims).to(d.device)).argmax(1)  # classifier prediction
+                #print(f"pred cls2 : {pred_cls2}")
+                #print(f"pred cls1 : {pred_cls1}")
+                #x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
     return pred_cls1 #CHANGE THIS TO pred_cls2 IF YOU FORGET ITS DOING NOTHING! 
 
 def apply_classifier(x, model, img, im0):
