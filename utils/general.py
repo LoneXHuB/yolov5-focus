@@ -949,7 +949,7 @@ def print_mutation(results, hyp, save_dir, bucket, prefix=colorstr('evolve: ')):
 def apply_classifier_lx(pbox, pcls, model, img, im0):
     # Apply a second stage classifier to YOLO outputs
     # Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
-    with torch.no_grad:
+    with torch.no_grad():
         if pbox is not None and len(pbox):
             d = pbox.clone()
 
