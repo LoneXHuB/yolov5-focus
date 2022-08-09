@@ -956,8 +956,8 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
             # Reshape and pad cutouts
             b = pbox  # boxes
             d = d.clone()
-            #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-            #b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+            b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+            b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
             d[:, :4] = xywh2xyxy(b).long()
 
         for i, image in enumerate(im0):
@@ -971,7 +971,7 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
                 ims = []
                 a = d[i]
                 print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
-                
+
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
                 im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
@@ -998,7 +998,6 @@ def apply_classifier(x, model, img, im0):
         if d is not None and len(d):
             print(f"d shape : {d}")
             d = d.clone()
-            print(d)
             # Reshape and pad cutouts
             b = xyxy2xywh(d[:, :4])  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
@@ -1013,6 +1012,7 @@ def apply_classifier(x, model, img, im0):
             print(f"predicted class : {pred_cls1.shape}")
             ims = []
             for a in d:
+                print(a)
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout, (224, 224))  # BGR
 
