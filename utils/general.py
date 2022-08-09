@@ -970,9 +970,10 @@ def apply_classifier_lx(pbox, pcls, model, img, im0):
                 print(f"im0 shape in classifier lx : {image.size()}")
                 ims = []
                 a = d[i]
+                print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
+                
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
-                print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
                 im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
                 if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
                 if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
