@@ -1022,7 +1022,61 @@ def apply_classifier(x, model, img, im0):
                 ims.append(im)
 
             pred_cls2 = model(torch.Tensor(ims).to(d.device)).argmax(1)  # classifier prediction
-            #x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
+            x[i] = x[i][pred_cls1 == pred_cls2]  # retain matching class detections
+
+    return x
+
+from torchvision import transforms
+from PIL import Image
+import rexTransform as rex
+
+def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resnet output
+# Apply a second stage classifier to YOLO outputs
+# Example model = torchvision.models.__dict__['efficientnet_b0'](pretrained=True).to(device).eval()
+    im0 = [im0] if isinstance(im0, np.ndarray) else im0
+
+    for i, d in enumerate(x):  # per image
+        if d is not None and len(d):
+            d = d.clone()
+            # Reshape and pad cutouts
+            """b = xyxy2xywh(d[:, :4])  # boxes
+            b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+            b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+            d[:, :4] = xywh2xyxy(b).long()
+            print(f"b in classifier shape : {b.size()}")"""
+            # Rescale boxes from img_size to im0 size
+            scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+
+            # Classes
+            pred_cls1 = d[:, 5].long()
+            print(f"yolov5 predicted class : {pred_cls1}")
+            ims = []
+            for a in d:
+                cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
+                im = cv2.resize(cutout, (256, 256))  # BGR
+                pth = "cutout.jpg"
+                if not cv2.imwrite(pth ,im): raise Exception(f"Couldnt write {pth}")
+                #im = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
+                im = Image.open("cutout.jpg")
+                im = im.convert("RGB")
+                testing_transforms = transforms.Compose([transforms.Resize((256,256)),
+                                             transforms.ToTensor(),
+                                             rex.Normalize(by=255)]
+                                             )
+
+                im = testing_transforms(im)
+                #im = torch.moveaxis(im,1,-1)
+                im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
+                ims.append(im)
+
+            print(ims[0])
+            model.eval()
+            with torch.no_grad():
+                scores = model(torch.Tensor(ims).to(d.device))
+            _ , predictions = scores.max(1)
+            pred_cls2 = predictions
+            print(f"predicted resnet class : {pred_cls2}")
+            x[i][:,-1] = pred_cls2  # replace yolov5 prediction with resnet class prediction for image "i"
 
     return x
 

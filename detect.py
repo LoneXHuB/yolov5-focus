@@ -42,7 +42,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 from models.common import DetectMultiBackend
 from utils.dataloaders import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
 from utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2, np,
-                           increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh, apply_classifier)
+                           increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh, apply_classifier, apply_classifier_r)
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import select_device, time_sync
 
@@ -93,7 +93,10 @@ def run(
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
-
+    
+    ##OVERRIDING NAMES TO MACH REXNET ###
+    names = ['10ml', '1ml', '20ml', '3ml', '5ml', '60ml', '6ml', 'cap']
+    #####################################
     # Dataloader
     if webcam:
         view_img = check_imshow()
@@ -108,6 +111,17 @@ def run(
     # Run inference
     model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], [0.0, 0.0, 0.0]
+
+    #Load classifier
+    PATH = "models/rexnet/rexnet-3ch2.pt"
+    classifier_model = ResNet50(img_channel=3,num_classes=8)
+    mdl_state = torch.load(PATH)
+    classifier_model.load_state_dict(mdl_state)
+    classifier_model.eval()
+    classifier_model = classifier_model.to(device)
+
+    print('rexnet model loaded!')
+
     for path, im, im0s, vid_cap, s in dataset:
         t1 = time_sync()
         im = torch.from_numpy(im).to(device)
@@ -133,11 +147,9 @@ def run(
 
         print(f"im shape :: {im.detach().cpu().numpy().shape}")
         print(f"im0s shape :: {np.array(im0s).shape}")
-
         
-        classifier_model = ResNet50(3,3).to(device)
         # Second-stage classifier (optional)
-        pred = apply_classifier(pred, classifier_model, im, im0s)
+        pred = apply_classifier_r(pred, classifier_model, im, im0s)
 
         # Process predictions
         for i, det in enumerate(pred):  # per image
@@ -178,6 +190,7 @@ def run(
                         annotator.box_label(xyxy, label, color=colors(c, True))
                     if save_crop:
                         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+            
 
             # Stream results
             im0 = annotator.result()
