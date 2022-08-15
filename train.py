@@ -354,7 +354,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                     imgs = nn.functional.interpolate(imgs, size=ns, mode='bilinear', align_corners=False)
 
             # Save one image from batch
-            print(f"batch iteration {i}")
+            """print(f"batch iteration {i}")
             print(f"imgs shape{imgs.shape}")
             
             ims_arr = imgs.detach().cpu().numpy()
@@ -366,7 +366,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             pth = f"origImage{i}.jpg"
             sv_img = cv2.cvtColor(im_arr, cv2.COLOR_BGR2RGB)
 
-            if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")
+            if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")"""
 
             im0s = torch.moveaxis(imgs, 1, -1) * 255
             # Forward

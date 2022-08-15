@@ -148,21 +148,22 @@ class ComputeLoss:
             b, a, gj, gi = indices[i]  # image, anchor, gridy, gridx
             tobj = torch.zeros(pi.shape[:4], dtype=pi.dtype, device=self.device)  # target obj
             
-            print(f"pi shape : {pi.shape}")
+            #print(f"pi shape : {pi.shape}")
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
                 pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions
-                print(f"b : {b.size()}")
-                print(f"predicted classes {pcls.size()}")
+                #print(f"b : {b.size()}")
+                #print(f"predicted classes {pcls.size()}")
                 # Regression
                 pxy = pxy.sigmoid() * 2 - 0.5
                 pwh = (pwh.sigmoid() * 2) ** 2 * anchors[i]
                 pbox = torch.cat((pxy, pwh), 1)  # predicted box
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
-                print(pbox.size())
-                print(pcls.size())
+                #print(pbox.size())
+                #print(pcls.size())
+
                 #resnt_classifier = ResNet50(3, self.nc)
                 #resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
 
