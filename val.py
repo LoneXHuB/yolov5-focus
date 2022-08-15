@@ -23,7 +23,7 @@ import json
 import os
 import sys
 from pathlib import Path
-
+from rexnet import ResNet50
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -38,7 +38,7 @@ from models.common import DetectMultiBackend
 from utils.callbacks import Callbacks
 from utils.dataloaders import create_dataloader
 from utils.general import (LOGGER, check_dataset, check_img_size, check_requirements, check_yaml,
-                           coco80_to_coco91_class, colorstr, emojis, increment_path, non_max_suppression, print_args,
+                           coco80_to_coco91_class, colorstr, emojis, increment_path, non_max_suppression,apply_classifier_r, print_args,
                            scale_coords, xywh2xyxy, xyxy2xywh)
 from utils.metrics import ConfusionMatrix, ap_per_class, box_iou
 from utils.plots import output_to_target, plot_images, plot_val_study
@@ -183,6 +183,7 @@ def run(
     seen = 0
     confusion_matrix = ConfusionMatrix(nc=nc)
     names = {k: v for k, v in enumerate(model.names if hasattr(model, 'names') else model.module.names)}
+
     class_map = coco80_to_coco91_class() if is_coco else list(range(1000))
     s = ('%20s' + '%11s' * 6) % ('Class', 'Images', 'Labels', 'P', 'R', 'mAP@.5', 'mAP@.5:.95')
     dt, p, r, f1, mp, mr, map50, map = [0.0, 0.0, 0.0], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
@@ -218,6 +219,16 @@ def run(
         t3 = time_sync()
         out = non_max_suppression(out, conf_thres, iou_thres, labels=lb, multi_label=True, agnostic=single_cls)
         dt[2] += time_sync() - t3
+
+        #Load classifier
+        PATH = "models/rexnet/rexnet-3ch2.pt"
+        classifier_model = ResNet50(img_channel=3,num_classes=8)
+        mdl_state = torch.load(PATH)
+        classifier_model.load_state_dict(mdl_state)
+        classifier_model.eval()
+        classifier_model = classifier_model.to(device)
+
+        apply_classifier_r(pred, classifier_model, im, ims_arr)
 
         # Metrics
         for si, pred in enumerate(out):
