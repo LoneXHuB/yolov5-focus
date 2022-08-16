@@ -164,8 +164,8 @@ class ComputeLoss:
                 #print(pbox.size())
                 #print(pcls.size())
 
-                #resnt_classifier = ResNet50(3, self.nc)
-                #resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
+                resnt_classifier = ResNet50(3, self.nc)
+                resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
 
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
