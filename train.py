@@ -369,7 +369,6 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")"""
 
             im0s = torch.moveaxis(imgs, 1, -1) * 255
-            im0s = torch.moveaxis(im0s,1,2)
             # Forward
             with torch.cuda.amp.autocast(amp):
                 pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
