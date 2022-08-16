@@ -955,10 +955,10 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
             d = pbox.detach().clone()
 
             # Reshape and pad cutouts
-            b = d.clone()  # boxes
+            """b = d.clone()  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
             b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
-            d[:, :4] = xywh2xyxy(b).long()
+            d[:, :4] = xywh2xyxy(b).long()"""
 
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
@@ -973,10 +973,17 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
                 print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
 
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
-                im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
-                im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
-                if not cv2.imwrite(f"cutout{i}.jpg" ,np.moveaxis(im, 0, -1)): raise Exception(f"Couldnt write cutout{i}.jpg")
+                im = cv2.resize(cutout, (256, 256))  # BGR
+                
+                if not cv2.imwrite(f"cutout{i}.jpg" ,im): raise Exception(f"Couldnt write cutout{i}.jpg")
                 if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
+                #im = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
+                im = Image.open("cutout.jpg")
+                im = im.convert("RGB")
+
+                """cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
+                im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
+                im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416"""
 
                 im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                 im /= 255  # 0 - 255 to 0.0 - 1.0
