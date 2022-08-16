@@ -962,7 +962,7 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
 
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
-                scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+                #scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
 
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
