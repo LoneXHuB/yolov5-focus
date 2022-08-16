@@ -369,13 +369,14 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             if not cv2.imwrite(pth ,sv_img): raise Exception(f"Couldnt write {pth}")"""
 
             im0s = torch.moveaxis(imgs, 1, -1) * 255
+            im0s = torch.moveaxis(im0s,1,2)
             # Forward
             with torch.cuda.amp.autocast(amp):
                 pred = model(imgs)  # forward (this is now inference tuple (see yolov detect module))
                 if isinstance(pred, Tuple):
                     loss, loss_items = compute_loss(pred[1], targets.to(device), pred, im=imgs, im0s=im0s)  # loss scaled by batch_size
                 else:
-                    loss, loss_items = compute_loss(pred, targets.to(device), None, im=imgs, im0s=ims_arr)  # loss scaled by batch_size
+                    loss, loss_items = compute_loss(pred, targets.to(device), None, im=imgs, im0s=im0s)  # loss scaled by batch_size
                     
                 if RANK != -1:
                     loss *= WORLD_SIZE  # gradient averaged between devices in DDP mode
