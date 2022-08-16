@@ -221,7 +221,7 @@ def run(
         dt[2] += time_sync() - t3
 
         #Load classifier
-        PATH = "models/rexnet/rexnet-3ch2.pt"
+        """PATH = "models/rexnet/rexnet-3ch2.pt"
         classifier_model = ResNet50(img_channel=3,num_classes=8)
         mdl_state = torch.load(PATH)
         classifier_model.load_state_dict(mdl_state)
@@ -229,7 +229,7 @@ def run(
         classifier_model = classifier_model.to(device)
 
         apply_classifier_r(pred, classifier_model, im, ims_arr)
-
+        """
         # Metrics
         for si, pred in enumerate(out):
             labels = targets[targets[:, 0] == si, 1:]
