@@ -113,7 +113,7 @@ def run(
     seen, windows, dt = 0, [], [0.0, 0.0, 0.0]
 
     #Load classifier
-    PATH = "models/rexnet/rexnet-3ch2.pt"
+    PATH = "yolov5/models/rexnet/rexnet50-3ch3.pt"
     classifier_model = ResNet50(img_channel=3,num_classes=8)
     mdl_state = torch.load(PATH)
     classifier_model.load_state_dict(mdl_state)
