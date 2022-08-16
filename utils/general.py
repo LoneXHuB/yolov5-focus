@@ -968,7 +968,7 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
                 print(f"pred_cls1 : {pred_cls1.size()}")
                 print(f"im0 shape in classifier lx : {image.size()}")
                 ims = []
-                a = d[i] * 640
+                a = d[i]
                 print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
 
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
