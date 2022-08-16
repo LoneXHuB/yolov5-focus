@@ -963,13 +963,12 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
                 #scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
-
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
                 print(f"pred_cls1 : {pred_cls1.size()}")
                 print(f"im0 shape in classifier lx : {image.size()}")
                 ims = []
-                a = d[i]
+                a = d[i] * 640
                 print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
 
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
