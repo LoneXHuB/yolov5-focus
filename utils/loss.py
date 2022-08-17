@@ -130,6 +130,7 @@ class ComputeLoss:
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
         
+        print(f"targets shape {targets.size()}")
         #NMS
         """
         if(infer is not None):
