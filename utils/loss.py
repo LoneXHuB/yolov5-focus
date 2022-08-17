@@ -130,7 +130,7 @@ class ComputeLoss:
         lobj = torch.zeros(1, device=self.device)  # object loss
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
         
-        print(f"targets shape {targets.size()}")
+        print(f"targets : {targets.size()}")
         #NMS
         """
         if(infer is not None):
@@ -153,7 +153,8 @@ class ComputeLoss:
             n = b.shape[0]  # number of targets
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
-                pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions
+                pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions'
+                print(f"pxy: {pxy} \npwh : {pwh}")
                 #print(f"b : {b.size()}")
                 #print(f"predicted classes {pcls.size()}")
                 # Regression
