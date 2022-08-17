@@ -963,9 +963,10 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
                 # Rescale boxes from img_size to im0 size
                 print(f'before scale xywh :{d[i, :4]}')
                 
-                d *= 640
-                print(f"cutout: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
                 scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+                
+                d *= 640
+                print(f"cutout: xywh scaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
                 print(f"pred_cls1 : {pred_cls1.size()}")
