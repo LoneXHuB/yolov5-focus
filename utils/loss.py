@@ -131,6 +131,8 @@ class ComputeLoss:
         tcls, tbox, indices, anchors = self.build_targets(p, targets)  # targets
         
         print(f"targets : {targets}")
+        print(f"tbox size :{tbox.size()}")
+        print(f"tbox :{tbox}")
         #NMS
         """
         if(infer is not None):
