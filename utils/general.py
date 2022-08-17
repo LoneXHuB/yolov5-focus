@@ -953,7 +953,8 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
         if pbox is not None and len(pbox):
             pcls = cls.detach().clone()
             d = pbox.detach().clone()
-
+            d *= 640
+            print(f"cutout{i}: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
             # Reshape and pad cutouts
             b = d.clone()  # boxes
             #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
@@ -962,7 +963,7 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
 
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
-                print(f'before scale xywh :{d[:, :4]}')
+                print(f'before scale xywh :{d[i, :4]}')
                 scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
@@ -977,7 +978,7 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
                 if not cv2.imwrite(f"cutout{i}.jpg" ,im): raise Exception(f"Couldnt write cutout{i}.jpg")
                 if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
                 #im = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
-                im = Image.open("cutout{i}.jpg")
+                im = Image.open(f"cutout{i}.jpg")
                 im = im.convert("RGB")
                 display(im)
                 """cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
@@ -1043,8 +1044,6 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
     for i, d in enumerate(x):  # per image
         if d is not None and len(d):
             d = d.clone()
-            d *= 640
-            print(f"cutout{i}: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
             # Reshape and pad cutouts
             """b = xyxy2xywh(d[:, :4])  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
