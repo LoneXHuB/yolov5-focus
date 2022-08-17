@@ -167,7 +167,8 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
                 #print(pbox.size())
-                #print(pcls.size())
+                print(pcls.size())
+                print(pcls)
 
                 resnt_classifier = ResNet50(3, self.nc)
                 resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
