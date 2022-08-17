@@ -962,14 +962,15 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
 
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
-                #scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+                print(f'before scale xywh :{d[:, :4]}')
+                scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
                 print(f"pred_cls1 : {pred_cls1.size()}")
                 print(f"im0 shape in classifier lx : {image.size()}")
                 ims = []
                 a = d[i]
-                print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
+                print(f"cutout{i}: xywh {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
 
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout.detach().cpu().numpy(), (256, 256))  # BGR
@@ -1042,8 +1043,8 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
     for i, d in enumerate(x):  # per image
         if d is not None and len(d):
             d = d.clone()
-            
-            print(f"cutout{i}: xyxy unscaled {d[0,0],d[0,1],d[0,2],d[0,3]}")
+            d *= 640
+            print(f"cutout{i}: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
             # Reshape and pad cutouts
             """b = xyxy2xywh(d[:, :4])  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
