@@ -958,11 +958,11 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
             b = d.clone()  # boxes
             #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
             #b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
-            d[:, :4] = xywh2xyxy(b).long()
+            #d[:, :4] = xywh2xyxy(b).long()
 
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
-                scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
+                #scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
                 print(f"pred_cls1 : {pred_cls1.size()}")
@@ -976,9 +976,9 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
                 if not cv2.imwrite(f"cutout{i}.jpg" ,im): raise Exception(f"Couldnt write cutout{i}.jpg")
                 if not cv2.imwrite(f"im0{i}.jpg" ,image.detach().cpu().numpy()): raise Exception(f"Couldnt write im0{i}.jpg")
                 #im = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
-                im = Image.open("cutout.jpg")
+                im = Image.open("cutout{i}.jpg")
                 im = im.convert("RGB")
-
+                display(im)
                 """cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout.detach().cpu().numpy(), (224, 224))  # BGR
                 im = im[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416"""
