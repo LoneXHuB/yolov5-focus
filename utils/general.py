@@ -953,8 +953,6 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
         if pbox is not None and len(pbox):
             pcls = cls.detach().clone()
             d = pbox.detach().clone()
-            d *= 640
-            print(f"cutout{i}: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
             # Reshape and pad cutouts
             b = d.clone()  # boxes
             #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
@@ -964,6 +962,9 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
         for i, image in enumerate(im0):
                 # Rescale boxes from img_size to im0 size
                 print(f'before scale xywh :{d[i, :4]}')
+                
+                d *= 640
+                print(f"cutout: xywh unscaled * 640 ::  {d[0,0],d[0,1],d[0,2],d[0,3]}")
                 scale_coords(img.shape[2:], d[:, :4], im0[i].shape)
                 # Classes
                 pred_cls1 = torch.argmax(pcls,1).long()
