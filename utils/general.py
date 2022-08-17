@@ -956,8 +956,8 @@ def apply_classifier_lx(pbox, cls, model, img, im0):
 
             # Reshape and pad cutouts
             b = d.clone()  # boxes
-            b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-            b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+            #b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+            #b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
             d[:, :4] = xywh2xyxy(b).long()
 
         for i, image in enumerate(im0):
@@ -1017,7 +1017,6 @@ def apply_classifier(x, model, img, im0):
             print(f"predicted class : {pred_cls1.shape}")
             ims = []
             for a in d:
-                print(a)
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 im = cv2.resize(cutout, (224, 224))  # BGR
 
@@ -1043,6 +1042,8 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
     for i, d in enumerate(x):  # per image
         if d is not None and len(d):
             d = d.clone()
+            
+            print(f"cutout{i}: xyxy unscaled {d[0,0],d[0,1],d[0,2],d[0,3]}")
             # Reshape and pad cutouts
             """b = xyxy2xywh(d[:, :4])  # boxes
             b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
@@ -1058,6 +1059,7 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
             ims = []
             for a in d:
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
+                print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
                 im = cv2.resize(cutout, (256, 256))  # BGR
                 pth = "cutout.jpg"
                 if not cv2.imwrite(pth ,im): raise Exception(f"Couldnt write {pth}")
@@ -1073,8 +1075,6 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
                 #im = torch.moveaxis(im,1,-1)
                 im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                 ims.append(im)
-
-            print(ims[0])
             model.eval()
             with torch.no_grad():
                 scores = model(torch.Tensor(ims).to(d.device))
