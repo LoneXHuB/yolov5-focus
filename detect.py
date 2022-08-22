@@ -95,7 +95,7 @@ def run(
     imgsz = check_img_size(imgsz, s=stride)  # check image size
     
     ##OVERRIDING NAMES TO MACH REXNET ###
-    names = ['10ml', '1ml', '20ml', '3ml', '5ml', '60ml', '6ml', 'cap']
+    #names = ['10ml', '1ml', '20ml', '3ml', '5ml', '60ml', '6ml', 'cap']
     #####################################
     # Dataloader
     if webcam:
@@ -113,8 +113,8 @@ def run(
     seen, windows, dt = 0, [], [0.0, 0.0, 0.0]
 
     #Load classifier
-    PATH = "yolov5/models/rexnet/rexnet50-3ch3.pt"
-    classifier_model = ResNet50(img_channel=3,num_classes=8)
+    PATH = "yolov5/models/rexnet/rexnet50-3ch3-proof.pt"
+    classifier_model = ResNet50(img_channel=3,num_classes= len(names))
     mdl_state = torch.load(PATH)
     classifier_model.load_state_dict(mdl_state)
     classifier_model.eval()
