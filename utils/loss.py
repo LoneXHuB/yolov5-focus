@@ -157,7 +157,6 @@ class ComputeLoss:
             if n:
                 # pxy, pwh, _, pcls = pi[b, a, gj, gi].tensor_split((2, 4, 5), dim=1)  # faster, requires torch 1.8.0
                 pxy, pwh, _, pcls = pi[b, a, gj, gi].split((2, 2, 1, self.nc), 1)  # target-subset of predictions'
-                print(f"pxy: {pxy} \npwh : {pwh}")
                 #print(f"b : {b.size()}")
                 #print(f"predicted classes {pcls.size()}")
                 # Regression
@@ -167,11 +166,11 @@ class ComputeLoss:
                 iou = bbox_iou(pbox, tbox[i], CIoU=True).squeeze()  # iou(prediction, target)
                 lbox += (1.0 - iou).mean()  # iou loss
                 #print(pbox.size())
-                print(pcls.size())
-                print(pcls)
+                #print(pcls.size())
+                #print(pcls)
 
-                resnt_classifier = ResNet50(3, self.nc)
-                resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
+                #resnt_classifier = ResNet50(3, self.nc)
+                #resnetplcls = apply_classifier_lx(pbox, pcls, resnt_classifier, im[b], im0s[b])
 
                 """if(infer is not None):
                     gn = torch.tensor(img.shape)[[1, 0, 1, 0]] 
