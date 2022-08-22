@@ -227,7 +227,9 @@ def run(
         classifier_model.load_state_dict(mdl_state)
         classifier_model.eval()
         classifier_model = classifier_model.to(device)
-
+        
+        print(f"im shape :: {im.detach().cpu().numpy().shape}")
+        print(f"im0s shape :: {np.array(ims_arr).shape}")
         apply_classifier_r(out, classifier_model, im, ims_arr)
         
         # Metrics
