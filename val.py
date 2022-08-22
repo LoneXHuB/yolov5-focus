@@ -221,7 +221,7 @@ def run(
         dt[2] += time_sync() - t3
 
         #Load classifier
-        PATH = "models/rexnet/rexnet50-3ch3-proof.pt"
+        PATH = "yolov5-focus/models/rexnet/rexnet50-3ch3-proof.pt"
         classifier_model = ResNet50(img_channel=3,num_classes=8)
         mdl_state = torch.load(PATH)
         classifier_model.load_state_dict(mdl_state)
