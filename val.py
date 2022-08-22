@@ -221,17 +221,15 @@ def run(
         dt[2] += time_sync() - t3
 
         #Load classifier
-        PATH = "yolov5-focus/models/rexnet/rexnet50-3ch3-proof.pt"
-        classifier_model = ResNet50(img_channel=3,num_classes=nc)
+        """PATH = "models/rexnet/rexnet-3ch2.pt"
+        classifier_model = ResNet50(img_channel=3,num_classes=8)
         mdl_state = torch.load(PATH)
         classifier_model.load_state_dict(mdl_state)
         classifier_model.eval()
         classifier_model = classifier_model.to(device)
-        
-        print(f"im shape :: {im.detach().cpu().numpy().shape}")
-        print(f"im0s shape :: {np.array(ims_arr).shape}")
-        apply_classifier_r(out, classifier_model, im, ims_arr)
-        
+
+        apply_classifier_r(pred, classifier_model, im, ims_arr)
+        """
         # Metrics
         for si, pred in enumerate(out):
             labels = targets[targets[:, 0] == si, 1:]

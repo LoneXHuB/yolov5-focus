@@ -121,7 +121,8 @@ def run(
     classifier_model = classifier_model.to(device)
 
     print('rexnet model loaded!')
-
+    correct = 0
+    incorrect = 0
     for path, im, im0s, vid_cap, s in dataset:
         t1 = time_sync()
         im = torch.from_numpy(im).to(device)
@@ -149,7 +150,7 @@ def run(
         print(f"im0s shape :: {np.array(im0s).shape}")
         
         # Second-stage classifier (optional)
-        pred = apply_classifier_r(pred, classifier_model, im, im0s)
+        #pred = apply_classifier_r(pred, classifier_model, im, im0s)
 
         # Process predictions
         for i, det in enumerate(pred):  # per image
@@ -167,6 +168,7 @@ def run(
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             imc = im0.copy() if save_crop else im0  # for save_crop
             annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
@@ -178,6 +180,24 @@ def run(
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
+                    try:
+                        c= int(cls)
+                        l = len(names[c])
+                        target = p.stem[:l]
+                        pcls = names[c]
+                        print(f"target : {target}")
+                        print(f"predicted class : {pcls}")
+                        if pcls == target:
+                            correct+= 1
+                            print("correct!")
+                        else:
+                            incorrect-=1
+                            print("incorrect!")
+                    except:
+                        incorrect+= 1
+                        print(f'incorrect!')
+                    if target == pcls:
+                        print("correct!")
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
                         line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
@@ -223,7 +243,9 @@ def run(
 
         # Print time (inference-only)
         LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
-
+    print(f"correct : {correct}")
+    print(f"incorrect : {incorrect}")
+    print(f"accuracy : {correct/(incorrect+correct)*100}%")
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
     LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
