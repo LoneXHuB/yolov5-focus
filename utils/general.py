@@ -1062,6 +1062,7 @@ def apply_classifier_r(x, model, img, im0): #r is for 'replace' output with resn
             for a in d:
                 cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
                 print(f"cutout{i}: xyxy {a[0].item(),a[1].item(),a[2].item(),a[3].item()}")
+                print(cutout.shape)
                 im = cv2.resize(cutout, (256, 256))  # BGR
                 pth = "cutout.jpg"
                 if not cv2.imwrite(pth ,im): raise Exception(f"Couldnt write {pth}")
